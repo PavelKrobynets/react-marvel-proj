@@ -20,16 +20,14 @@ export default class RandomChar extends Component {
 
   onError = () => {
     this.setState({ loading: false, error: true });
-		console.log("error");
   };
 
   onCharLoaded = (char) => {
     this.setState({ char, loading: false });
-		console.log("char loaded");
   };
 
   updateChar = () => {
-    this.setState({ loading: true });
+    this.setState({ loading: true , error: false});
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
     this.marvelService
       .getCharacter(id)
@@ -68,13 +66,14 @@ export default class RandomChar extends Component {
 
 const View = ({ name, description, thumbnail, homepage, wiki }) => {
 	const defImgUrl = "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg"
+	let rigthDescr = description.length < 140 ? description :  description.slice(0, 140) + "...";
   return (
     <div className="randomchar__block">
       <img src={thumbnail} alt="Random character" className="randomchar__img" 
-			style={thumbnail === defImgUrl ? {objectFit: "contain"} : {objectFit: "cover"}}/>
+			style={thumbnail === defImgUrl ? {objectFit: "fill"} : {objectFit: "cover"}}/>
       <div className="randomchar__info">
         <p className="randomchar__name">{name}</p>
-        <p className="randomchar__descr">{description}</p>
+        <p className="randomchar__descr">{rigthDescr}</p>
         <div className="randomchar__btns">
           <a href={homepage} className="button button__main">
             <div className="inner">homepage</div>

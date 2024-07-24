@@ -2,44 +2,71 @@ import "./charList.scss";
 import { Component } from "react";
 import MarvelService from "../../services/MarvelService";
 import Loader from "../loader/Loader";
+import ErrorMessage from "../errorMessage/ErrorMessage";
 
 export default class CharList extends Component {
   state = {
     charList: [],
-		loading: true
-	};
+    loading: true,
+  };
 
   marvelService = new MarvelService();
 
-	componentDidMount(){
-		this.loadCharacters();
-	}
+  componentDidMount() {
+    this.loadCharacters();
+  }
 
-	onCharLoaded = (charList) => {
+  onCharLoaded = (charList) => {
     this.setState({ charList, loading: false });
-		console.log("char list loaded");
   };
 
   loadCharacters = () => {
-    this.marvelService
-		.getAllCharacters()
-		.then((charList) => {
-			this.onCharLoaded(charList)
-		});
-		
+    this.marvelService.getAllCharacters().then((charList) => {
+      this.onCharLoaded(charList);
+    });
   };
 
-  render() {
-    const { charList, loading } = this.state;
+  renderItems(charList) {
 		const maxChar = 9;
-		const charArray = charList.map(item =>  <View {...item}/>).slice(0, maxChar)
-    const loader = loading ? <Loader /> : null;
+    const items = charList.map((item) => {
+      const defImgUrl =
+        "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg";
+      return (
+        <li
+          className="char__item"
+          key={item.id}
+          onClick={() => this.props.onCharSelected(item.id)}
+        >
+          <img
+            src={item.thumbnail}
+            alt="abyss"
+            style={
+              item.thumbnail === defImgUrl
+                ? { objectFit: "fill" }
+                : { objectFit: "cover" }
+            }
+          />
+          <div className="char__name">{item.name}</div>
+        </li>
+      );
+    }).slice(0, maxChar);
+
+		return <ul className="char__grid">{items}</ul>;
+
+  }
+
+  render() {
+    const { charList, loading, errorMessage } = this.state,
+		items = this.renderItems(charList),
+    loader = loading ? <Loader /> : null,
+		error = errorMessage ? <ErrorMessage /> : null,
+		content = !(loader || errorMessage) ? items : null;
+			
     return (
       <div className="char__list">
-        <ul className="char__grid">
-					{loader}
-					{charArray}
-        </ul>
+          {loader}
+					{error}
+          {content}
         <button className="button button__main button__long">
           <div className="inner">load more</div>
         </button>
@@ -47,12 +74,3 @@ export default class CharList extends Component {
     );
   }
 }
-
-const View = ({ thumbnail, name }) => {
-  return (
-		<li className="char__item">
-    <img src={thumbnail} alt="abyss" />
-    <div className="char__name">{name}</div>
-  </li>
-	)
-};
