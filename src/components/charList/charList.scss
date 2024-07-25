@@ -41,3 +41,21 @@
         color: #fff;
     }
 }
+
+@keyframes glowing {
+	0% {
+		background-color: #9F0013;
+		box-shadow: 0 0 5px #9F0013;
+	}
+	50% {
+		background-color: #9F0013;
+		box-shadow: 0 0 20px #9F0013;
+	}
+	100% {
+		background-color: #9F0013;
+		box-shadow: 0 0 5px #9F0013;
+	}
+}
+.button__load {
+	animation: glowing 1300ms infinite;
+}
