@@ -17,11 +17,11 @@ export default class CharInfo extends Component {
     this.updateChar();
   }
 
-	componentDidUpdate(prevProps, prevState){
-		if(this.props.charId !== prevProps.charId){
-			this.updateChar();
-		}
-	}
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.charId !== prevProps.charId) {
+      this.updateChar();
+    }
+  }
 
   onError = () => {
     this.setState({ loading: false, error: true });
@@ -32,11 +32,11 @@ export default class CharInfo extends Component {
   };
 
   updateChar = () => {
-		const { charId } = this.props;
+    const { charId } = this.props;
     if (!charId) {
-			return;
+      return;
     }
-		this.setState({ loading: true });
+    this.setState({ loading: true });
     this.marvelService
       .getCharacter(charId)
       .then((res) => this.onCharLoaded(res))
@@ -62,12 +62,19 @@ export default class CharInfo extends Component {
 }
 
 const View = ({ name, description, thumbnail, homepage, wiki, comics }) => {
-	const comicsList =  <ComicsItem comics={comics}/>,
-	image = "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg";
+  const comicsList = <ComicsItem comics={comics} />,
+    image =
+      "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg";
   return (
     <>
       <div className="char__basics">
-        <img src={thumbnail} alt="abyss" style={thumbnail === image ? {objectFit: "fill"} : {objectFit: "cover"}}/>
+        <img
+          src={thumbnail}
+          alt="abyss"
+          style={
+            thumbnail === image ? { objectFit: "fill" } : { objectFit: "cover" }
+          }
+        />
         <div>
           <div className="char__info-name">{name}</div>
           <div className="char__btns">
@@ -89,12 +96,16 @@ const View = ({ name, description, thumbnail, homepage, wiki, comics }) => {
   );
 };
 
-const ComicsItem = ({comics}) => {
-	const maxItems = 10;
-	const comicsLi = comics.map((item, i) => {
-		return (
-			<li className="char__comics-item" key={i}>{item.name}</li>
-		)
-	}).slice(0, maxItems)
-	return comicsLi;
-}
+const ComicsItem = ({ comics }) => {
+  const maxItems = 10;
+  const comicsLi = comics
+    .map((item, i) => {
+      return (
+        <li className="char__comics-item" key={i}>
+          {item.name}
+        </li>
+      );
+    })
+    .slice(0, maxItems);
+  return comicsLi;
+};
