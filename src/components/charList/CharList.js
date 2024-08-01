@@ -1,47 +1,34 @@
 import "./charList.scss";
 import { useState, useEffect, useRef } from "react";
-import MarvelService from "../../services/MarvelService";
+import useMarvelService from "../../services/MarvelService";
 import Loader from "../loader/Loader";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
 export default function CharList(props) {
   const [charList, setCharList] = useState([]),
-    [loading, setLoading] = useState(true),
-    [error, setError] = useState(false),
     [charLength, setCharLength] = useState(9),
     [loadMore, setLoadMore] = useState(false);
 
-  const marvelService = new MarvelService();
+  const { loading, error, getAllCharacters } = useMarvelService();
 
   useEffect(() => {
-    loadCharacters(charLength);
-  }, [])
-
-  const onError = () => {
-    return setError(true);
-  };
+    loadCharacters(charLength, true);
+  }, []);
 
   const onCharLoaded = (charList) => {
-    setCharList(charList)
-		setLoading(false)
+    setCharList(charList);
   };
 
-  const loadCharacters = (charLength) => {
-    marvelService
-      .getAllCharacters(charLength)
-      .then((charList) => {
-        onCharLoaded(charList);
-        setLoadMore(false);
-      })
-      .catch(onError);
+  const loadCharacters = (charLength, toggler) => {
+		toggler ? setLoadMore(false) : setLoadMore(true)
+    getAllCharacters(charLength)
+		.then(onCharLoaded);
   };
 
   const addCharLength = () => {
     const newCharLength = charLength + 9;
-    setLoadMore(true);
-		setCharLength(newCharLength);
-    console.log(newCharLength);
-    loadCharacters(newCharLength);
+    setCharLength(newCharLength);
+    loadCharacters(newCharLength, false);
   };
 
   const itemRefs = useRef([]);
@@ -94,17 +81,15 @@ export default function CharList(props) {
     return <ul className="char__grid">{items}</ul>;
   }
 
-  
-    const items = renderItems(charList),
-    loader = loading ? <Loader /> : null,
-    errorMessage = error ? <ErrorMessage /> : null,
-    content = !(loader || errorMessage) ? items : null;
+  const items = renderItems(charList),
+    loader = !loadMore && loading ? <Loader /> : null,
+    errorMessage = error ? <ErrorMessage /> : null;
 
   return (
     <div className="char__list">
       {loader}
-      {error}
-      {content}
+      {errorMessage}
+			{items}
       <button
         className="button button__main button__long button__load"
         onClick={() => addCharLength()}
@@ -119,4 +104,3 @@ export default function CharList(props) {
     </div>
   );
 }
-

@@ -12,6 +12,7 @@ export default class ErrorBoundary extends Component {
       error: true,
     });
   }
+	
 
   render() {
     if (this.state.error) {

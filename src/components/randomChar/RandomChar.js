@@ -1,37 +1,27 @@
 import { useState, useEffect } from "react";
 import "./randomChar.scss";
 import mjolnir from "../../resources/img/mjolnir.png";
-import MarvelService from "../../services/MarvelService";
+import useMarvelService from "../../services/MarvelService";
 import Loader from "../loader/Loader";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 
 export default function RandomChar() {
   const [char, setCahr] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
 
-  const marvelService = new MarvelService();
+  const { loading, error, getCharacter} = useMarvelService();
 
   useEffect(() => {
     updateChar();
     // IT CAUSES CHAR LOADING 2 TIMES (Strict mode)
   }, []);
 
-  const onError = () => {
-    setLoading(false);
-    setError(true);
-  };
-
   const onCharLoaded = (char) => {
     setCahr(char);
-    setLoading(false);
   };
 
   const updateChar = () => {
-    setLoading(true);
-    setError(false);
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-    marvelService.getCharacter(id).then(onCharLoaded).catch(onError);
+    getCharacter(id).then(onCharLoaded);
   };
 
   const errorMessage = error ? <ErrorMessage /> : null;
@@ -61,8 +51,7 @@ export default function RandomChar() {
 const View = ({ name, description, thumbnail, homepage, wiki }) => {
   const defImgUrl =
     "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg";
-  let rigthDescr =
-    description.length < 140 ? description : description.slice(0, 140) + "...";
+  
   return (
     <div className="randomchar__block">
       <img
@@ -77,7 +66,7 @@ const View = ({ name, description, thumbnail, homepage, wiki }) => {
       />
       <div className="randomchar__info">
         <p className="randomchar__name">{name}</p>
-        <p className="randomchar__descr">{rigthDescr}</p>
+        <p className="randomchar__descr">{description}</p>
         <div className="randomchar__btns">
           <a href={homepage} className="button button__main">
             <div className="inner">homepage</div>
