@@ -19,7 +19,7 @@ export default function App() {
     <div className="app">
       <AppHeader />
       <main>
-        <ErrorBoundary>
+        {/* <ErrorBoundary>
           <RandomChar />
         </ErrorBoundary>
         <div className="char__content">
@@ -29,8 +29,8 @@ export default function App() {
           <ErrorBoundary>
             <CharInfo charId={selectedChar} />
           </ErrorBoundary>
-        </div>
-        {/* <ComicsList/> */}
+        </div> */}
+        <ComicsList/>
         <img className="bg-decoration" src={decoration} alt="vision" />
       </main>
     </div>

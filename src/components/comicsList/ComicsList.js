@@ -1,108 +1,90 @@
 import "./comicsList.scss";
-import uw from "../../resources/img/UW.png";
-import xMen from "../../resources/img/x-men.png";
 import AppBanner from "../appBanner/AppBanner";
 import { useState, useEffect } from "react";
-import useMarvelService from "../../services/MarvelService"
+import useMarvelService from "../../services/MarvelService";
+import Loader from "../loader/Loader";
+import ErrorMessage from "../errorMessage/ErrorMessage";
 
 export default function ComicsList() {
- const [comics, setComics] = useState(null);
- const [comicsLength, setComicsLength] = useState(9);
-	const {loading, error, getComics} = useMarvelService();
+  const [comics, setComics] = useState([]);
+  const [comicsLength, setComicsLength] = useState(8);
 
-	useEffect(() => {
-		getComics(comicsLength);
-	})
+  const { loading, error, getComics, loadMore, listLoaded } =
+    useMarvelService();
 
+  useEffect(() => {
+    loadComicses(comicsLength, false);
+  }, []);
 
-	const loadComicses = (comicsLength) => {
-		getComics(comicsLength)
-		.then(comics)
-	}
+  const loadComicses = (comicsLength, toggler) => {
+    getComics(comicsLength, toggler).then(setComics);
+  };
 
+  const addComicsLength = () => {
+    const newComicsLength = comicsLength + 8;
+    setComicsLength(newComicsLength);
+    loadComicses(newComicsLength, true);
+  };
 
-  return (
-    <>
-      <AppBanner />
-      <div className="comics__list">
-        <ul className="comics__grid">
-          <li className="comics__item">
-            <a href="#">
-              <img src={uw} alt="ultimate war" className="comics__item-img" />
-              <div className="comics__item-name">
-                ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB
-              </div>
-              <div className="comics__item-price">9.99$</div>
-            </a>
-          </li>
-          <li className="comics__item">
-            <a href="#">
-              <img src={xMen} alt="x-men" className="comics__item-img" />
-              <div className="comics__item-name">
-                X-Men: Days of Future Past
-              </div>
-              <div className="comics__item-price">NOT AVAILABLE</div>
-            </a>
-          </li>
-          <li className="comics__item">
-            <a href="#">
-              <img src={uw} alt="ultimate war" className="comics__item-img" />
-              <div className="comics__item-name">
-                ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB
-              </div>
-              <div className="comics__item-price">9.99$</div>
-            </a>
-          </li>
-          <li className="comics__item">
-            <a href="#">
-              <img src={xMen} alt="x-men" className="comics__item-img" />
-              <div className="comics__item-name">
-                X-Men: Days of Future Past
-              </div>
-              <div className="comics__item-price">NOT AVAILABLE</div>
-            </a>
-          </li>
-          <li className="comics__item">
-            <a href="#">
-              <img src={uw} alt="ultimate war" className="comics__item-img" />
-              <div className="comics__item-name">
-                ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB
-              </div>
-              <div className="comics__item-price">9.99$</div>
-            </a>
-          </li>
-          <li className="comics__item">
-            <a href="#">
-              <img src={xMen} alt="x-men" className="comics__item-img" />
-              <div className="comics__item-name">
-                X-Men: Days of Future Past
-              </div>
-              <div className="comics__item-price">NOT AVAILABLE</div>
-            </a>
-          </li>
-          <li className="comics__item">
-            <a href="#">
-              <img src={uw} alt="ultimate war" className="comics__item-img" />
-              <div className="comics__item-name">
-                ULTIMATE X-MEN VOL. 5: ULTIMATE WAR TPB
-              </div>
-              <div className="comics__item-price">9.99$</div>
-            </a>
-          </li>
-          <li className="comics__item">
-            <a href="#">
-              <img src={xMen} alt="x-men" className="comics__item-img" />
-              <div className="comics__item-name">
-                X-Men: Days of Future Past
-              </div>
-              <div className="comics__item-price">NOT AVAILABLE</div>
-            </a>
-          </li>
-        </ul>
-        <button className="button button__main button__long">
+  function renderComicsLsit(comics) {
+    const comicses = comics.map((item) => {
+      return (
+        <li className="comics__item" key={item.id}>
+          <a href="#">
+            <div className="comics__item-img">
+              <img
+                src={item.thumbnail}
+                alt={item.title}
+                style={
+                  item.thumbnail ===
+                  "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg"
+                    ? { height: "100%" }
+                    : { objectFit: "fill" }
+                }
+              />
+            </div>
+            <div className="comics__item-name">{item.title}</div>
+            <div className="comics__item-price">{item.price}</div>
+          </a>
+        </li>
+      );
+    });
+
+    return <ul className="comics__grid">{comicses}</ul>;
+  }
+
+  function showBtn() {
+    if (listLoaded) {
+      return (
+        <button
+          className={`button button__main button__long button__load`}
+          onClick={() => addComicsLength()}
+          style={
+            loadMore === true
+              ? { animation: "glowing 1300ms infinite" }
+              : { animation: "glowing" }
+          }
+        >
           <div className="inner">load more</div>
         </button>
+      );
+    }
+    return null;
+  }
+
+  const comicses = renderComicsLsit(comics),
+    loader = !loadMore && loading ? <Loader /> : null,
+    errorMessage = error ? <ErrorMessage /> : null;
+
+  return (
+    <div className="comics">
+      <AppBanner />
+      <div className="comics__list">
+        {comicses}
+        {errorMessage}
+        {loader}
       </div>
-    </>
+      {showBtn()}
+    </div>
   );
 }

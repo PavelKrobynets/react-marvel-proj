@@ -16,18 +16,16 @@ export default function CharList(props) {
 
   }, []);
 
-  const onCharLoaded = (charList) => {
-    setCharList(charList);
-  };
 
   const loadCharacters = (charLength, toggler) => {
-    getAllCharacters(charLength, toggler).then(onCharLoaded);
+    getAllCharacters(charLength, toggler).then(setCharList);
   };
 
   const addCharLength = () => {
     const newCharLength = charLength + 9;
     setCharLength(newCharLength);
     loadCharacters(newCharLength, true);
+		console.log("loaded");
   };
 
   const itemRefs = useRef([]);
@@ -79,7 +77,7 @@ export default function CharList(props) {
     return <ul className="char__grid">{items}</ul>;
   }
 
-  function showBnt() {
+  function showBtn() {
     if(listLoaded){
 			return (
 				<button
@@ -100,15 +98,14 @@ export default function CharList(props) {
 
   const items = renderItems(charList),
     loader = !loadMore && loading ? <Loader /> : null,
-    errorMessage = error ? <ErrorMessage /> : null,
-		showBtn = showBnt()
+    errorMessage = error ? <ErrorMessage /> : null;
 
   return (
     <div className="char__list">
       {loader}
       {errorMessage}
       {items}
-			{showBtn}
+			{showBtn()}
     </div>
   );
 }
