@@ -8,7 +8,7 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 export default function RandomChar() {
   const [char, setCahr] = useState({});
 
-  const { loading, error, getCharacter} = useMarvelService();
+  const { loading, error, getCharacter, clearError} = useMarvelService();
 
   useEffect(() => {
     updateChar();
@@ -20,6 +20,7 @@ export default function RandomChar() {
   };
 
   const updateChar = () => {
+		clearError();
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
     getCharacter(id).then(onCharLoaded);
   };

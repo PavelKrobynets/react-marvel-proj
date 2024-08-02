@@ -7,27 +7,16 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 import Skeleton from "../skeleton/Skeleton";
 
 function CharInfo(props) {
-  const [char, setChar] = useState(null),
-    [loading, setLoading] = useState(false),
-    [error, setError] = useState(false);
-
-  const marvelService = new MarvelService();
+  const [char, setChar] = useState(null);
+  const {loading, error, getCharacter, clearError} =  MarvelService();
 
   useEffect(() => {
     updateChar();
 		console.log("change");
   }, [props.charId]);
 
-  const onError = () => {
-    setLoading(false);
-    setError(true);
-  };
-
-
   const onCharLoaded = (char) => {
     setChar(char);
-    setLoading(false);
-    setError(false);
   };
 
   const updateChar = () => {
@@ -35,11 +24,9 @@ function CharInfo(props) {
     if (!charId) {
       return;
     }
-    setLoading(true);
-    marvelService
-      .getCharacter(charId)
+		clearError();
+      getCharacter(charId)
       .then(onCharLoaded)
-      .catch(onError);
   };
 
   const errorMessage = error ? <ErrorMessage /> : null;

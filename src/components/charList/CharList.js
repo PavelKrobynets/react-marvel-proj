@@ -17,6 +17,7 @@ export default function CharList(props) {
 
   const onCharLoaded = (charList) => {
     setCharList(charList);
+		setLoadMore(false)
   };
 
   const loadCharacters = (charLength, toggler) => {
