@@ -6,30 +6,28 @@ import ErrorMessage from "../errorMessage/ErrorMessage";
 
 export default function CharList(props) {
   const [charList, setCharList] = useState([]),
-    [charLength, setCharLength] = useState(9),
-    [loadMore, setLoadMore] = useState(false);
+    [charLength, setCharLength] = useState(9);
+		
 
-  const { loading, error, getAllCharacters } = useMarvelService();
+  const { loading, error, getAllCharacters, loadMore, listLoaded } = useMarvelService();
 
   useEffect(() => {
-    loadCharacters(charLength, true);
+    loadCharacters(charLength, false);
+
   }, []);
 
   const onCharLoaded = (charList) => {
     setCharList(charList);
-		setLoadMore(false)
   };
 
   const loadCharacters = (charLength, toggler) => {
-		toggler ? setLoadMore(false) : setLoadMore(true)
-    getAllCharacters(charLength)
-		.then(onCharLoaded);
+    getAllCharacters(charLength, toggler).then(onCharLoaded);
   };
 
   const addCharLength = () => {
     const newCharLength = charLength + 9;
     setCharLength(newCharLength);
-    loadCharacters(newCharLength, false);
+    loadCharacters(newCharLength, true);
   };
 
   const itemRefs = useRef([]);
@@ -78,30 +76,39 @@ export default function CharList(props) {
         );
       })
       .slice(0, maxChar);
-
     return <ul className="char__grid">{items}</ul>;
+  }
+
+  function showBnt() {
+    if(listLoaded){
+			return (
+				<button
+					className={`button button__main button__long button__load`}
+					onClick={() => addCharLength()}
+					style={
+						loadMore === true
+							? { animation: "glowing 1300ms infinite" }
+							: { animation: "glowing" }
+					}
+				>
+					<div className="inner">load more</div>
+				</button>
+			);
+		}
+		return null;
   }
 
   const items = renderItems(charList),
     loader = !loadMore && loading ? <Loader /> : null,
-    errorMessage = error ? <ErrorMessage /> : null;
+    errorMessage = error ? <ErrorMessage /> : null,
+		showBtn = showBnt()
 
   return (
     <div className="char__list">
       {loader}
       {errorMessage}
-			{items}
-      <button
-        className="button button__main button__long button__load"
-        onClick={() => addCharLength()}
-        style={
-          loadMore === true
-            ? { animation: "glowing 1300ms infinite" }
-            : { animation: "glowing" }
-        }
-      >
-        <div className="inner">load more</div>
-      </button>
+      {items}
+			{showBtn}
     </div>
   );
 }

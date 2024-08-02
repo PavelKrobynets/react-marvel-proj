@@ -1,16 +1,22 @@
+import { useState } from "react";
 import useHttp from "../hooks/http.hook";
 
 export default function useMarvelService() {
   const { loading, error, request, clearError } = useHttp();
+	const [loadMore, setLoadMore] = useState(false);
+	const [listLoaded, setListLoaded] = useState(false)
 
   const _apiBase = "https://gateway.marvel.com:443/v1/public/";
   const _key = "apikey=44c2cf8b8380798bbd06178bc0325db8";
   const _baseLimit = 9;
 
-  const getAllCharacters = async (limit = _baseLimit) => {
+  const getAllCharacters = async (limit = _baseLimit, toggler) => {
+		setLoadMore(toggler);
     const res = await request(
       `${_apiBase}characters?limit=${limit}&offset=210&${_key}`
     );
+		setLoadMore(toggler);
+		setListLoaded(true)
     return res.data.results.map(_transformCharacter);
   };
 
@@ -19,13 +25,14 @@ export default function useMarvelService() {
     return _transformCharacter(res.data.results[0]);
   };
 
+	
   const _transformCharacter = (char) => {
-    const description =
-      char.description !== ""
-        ? char.description.slice(0, 140) + "..."
-        : "Hero heve no description";
+		const description =
+		char.description !== ""
+		? char.description.slice(0, 140) + "..."
+		: "Hero heve no description";
     return {
-      id: char.id,
+			id: char.id,
       name: char.name,
       description: description,
       thumbnail: char.thumbnail.path + "." + char.thumbnail.extension,
@@ -34,6 +41,22 @@ export default function useMarvelService() {
       comics: char.comics.items,
     };
   };
+	
+	const getComics = async (limit = _baseLimit) => {
+		const res = await request(
+			`${_apiBase}comics?limit=${limit}&offset=51&${_key}`
+		);
+		return res.data.results.map(_transformComic);
+	}
 
-  return { loading, error, getAllCharacters, getCharacter, clearError };
+	const _transformComic = (comic) => {
+		return {
+			id: comic.id,
+			title: comic.title,
+			thumbnail: comic.thumbnail.path + "." + comic.thumbnail.extension,
+			price: comic.prices.price
+		}
+	}
+
+  return { loading, error, getAllCharacters, getCharacter, clearError, getComics, loadMore, listLoaded };
 }
