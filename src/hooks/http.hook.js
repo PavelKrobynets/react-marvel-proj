@@ -3,19 +3,16 @@ import { useState, useCallback } from "react";
 export default function useHttp() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-	const [loadMore, setLoadMore] = useState(false);
 
   const request = useCallback(
     async (
       url,
       method = "GET",
       body = null,
-      headers = { "Content-Type": "application/json" },
-			loadMore = false
+      headers = { "Content-Type": "application/json" }
     ) => {
       setError(null);
       setLoading(true);
-			setLoadMore(loadMore)
       try {
         const response = await fetch(url, {
           method,
@@ -27,7 +24,6 @@ export default function useHttp() {
         }
         const data = await response.json();
         setLoading(false);
-				setLoadMore(false)
         return data;
       } catch (err) {
         setError(err.message);
@@ -39,5 +35,5 @@ export default function useHttp() {
 
   const clearError = useCallback(() => setError(null), []);
 
-  return { loading, error, request, clearError , loadMore};
+  return { loading, error, request, clearError };
 }

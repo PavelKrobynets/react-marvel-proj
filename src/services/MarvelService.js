@@ -44,7 +44,7 @@ export default function useMarvelService() {
   const getComics = async (limit = _baseLimit, toggler) => {
     setLoadMore(toggler);
     const res = await request(
-      `${_apiBase}comics?limit=${limit}&offset=51&${_key}`
+      `${_apiBase}comics?limit=${limit}&offset=2&${_key}`
     );
     setLoadMore(false);
     setListLoaded(true);
