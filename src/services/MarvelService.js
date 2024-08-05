@@ -41,7 +41,7 @@ export default function useMarvelService() {
     };
   };
 
-  const getComics = async (limit = _baseLimit, toggler) => {
+  const getAllComics = async (limit = _baseLimit, toggler) => {
     setLoadMore(toggler);
     const res = await request(
       `${_apiBase}comics?limit=${limit}&offset=2&${_key}`
@@ -49,6 +49,11 @@ export default function useMarvelService() {
     setLoadMore(false);
     setListLoaded(true);
     return res.data.results.map(_transformComic);
+  };
+
+  const getComic = async (id) => {
+    const res = await request(`${_apiBase}comics/${id}?${_key}`);
+    return _transformComic(res.data.results[0]);
   };
 
   const _transformComic = (comic) => {
@@ -59,6 +64,11 @@ export default function useMarvelService() {
       price: comic.prices[0].price
         ? `${comic.prices[0].price}$`
         : "not available",
+      description: comic.description || "There is no description",
+      pageCount: comic.pageCount
+        ? `${comic.pageCount} p.`
+        : "No info abou pages",
+      language: comic.textObjects.language || "en-us",
     };
   };
 
@@ -68,7 +78,8 @@ export default function useMarvelService() {
     getAllCharacters,
     getCharacter,
     clearError,
-    getComics,
+    getAllComics,
+		getComic,
     loadMore,
     listLoaded,
   };

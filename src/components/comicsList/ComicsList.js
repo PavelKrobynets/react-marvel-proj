@@ -1,6 +1,7 @@
 import "./comicsList.scss";
 import AppBanner from "../appBanner/AppBanner";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import useMarvelService from "../../services/MarvelService";
 import Loader from "../loader/Loader";
 import ErrorMessage from "../errorMessage/ErrorMessage";
@@ -9,7 +10,7 @@ export default function ComicsList() {
   const [comics, setComics] = useState([]);
   const [comicsLength, setComicsLength] = useState(8);
 
-  const { loading, error, getComics, loadMore, listLoaded } =
+  const { loading, error, getAllComics, loadMore, listLoaded } =
     useMarvelService();
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export default function ComicsList() {
   }, []);
 
   const loadComicses = (comicsLength, toggler) => {
-    getComics(comicsLength, toggler).then(setComics);
+    getAllComics(comicsLength, toggler).then(setComics);
   };
 
   const addComicsLength = () => {
@@ -30,7 +31,7 @@ export default function ComicsList() {
     const comicses = comics.map((item) => {
       return (
         <li className="comics__item" key={item.id}>
-          <a href="#">
+          <Link to={`/comics/${item.id}`}>
             <div className="comics__item-img">
               <img
                 src={item.thumbnail}
@@ -45,7 +46,7 @@ export default function ComicsList() {
             </div>
             <div className="comics__item-name">{item.title}</div>
             <div className="comics__item-price">{item.price}</div>
-          </a>
+          </Link>
         </li>
       );
     });
