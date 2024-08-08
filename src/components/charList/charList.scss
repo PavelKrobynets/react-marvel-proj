@@ -5,6 +5,7 @@
     margin-top: 50px;
     display: grid;
     grid-template-columns: 650px 425px;
+		grid-template-rows: repeat(auto);
     column-gap: 25px;
     align-items: start;
   }
@@ -32,6 +33,10 @@
       box-shadow: 0 5px 20px $main-color;
       transform: translateY(-8px);
     }
+		&__list{
+			grid-column-start: 1;
+			grid-column-end: auto;
+		}
   }
   &__name {
     font-weight: bold;
@@ -41,8 +46,6 @@
     color: #fff;
   }
 }
-
-
 
 @keyframes glowing {
   0% {
@@ -60,5 +63,4 @@
 }
 .button__load {
   display: none;
-
 }

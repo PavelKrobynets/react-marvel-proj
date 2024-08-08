@@ -26,6 +26,7 @@ export default function CharList(props) {
     setCharLength(newCharLength);
     loadCharacters(newCharLength, true);
 		console.log("loaded");
+
   };
 
   const itemRefs = useRef([]);
@@ -99,6 +100,8 @@ export default function CharList(props) {
   const items = renderItems(charList),
     loader = !loadMore && loading ? <Loader /> : null,
     errorMessage = error ? <ErrorMessage /> : null;
+
+	
 
   return (
     <div className="char__list">

@@ -10,6 +10,8 @@ export default function useMarvelService() {
   const _key = "apikey=44c2cf8b8380798bbd06178bc0325db8";
   const _baseLimit = 9;
 
+	// Character block
+
   const getAllCharacters = async (limit = _baseLimit, toggler) => {
     setLoadMore(toggler);
     const res = await request(
@@ -24,6 +26,15 @@ export default function useMarvelService() {
     const res = await request(`${_apiBase}characters/${id}?${_key}`);
     return _transformCharacter(res.data.results[0]);
   };
+
+	const getCharacterByName = async (name) => {
+		const res = await request(
+			`${_apiBase}characters?${_key}`
+		)
+		return _transformCharacter(res.filter(char => {
+			return char.name.toLowerCase().includes(name.toLowerCase())
+		}))
+	}
 
   const _transformCharacter = (char) => {
     const description =
@@ -41,6 +52,8 @@ export default function useMarvelService() {
     };
   };
 
+
+	// Comics block
   const getAllComics = async (limit = _baseLimit, toggler) => {
     setLoadMore(toggler);
     const res = await request(
@@ -82,5 +95,6 @@ export default function useMarvelService() {
 		getComic,
     loadMore,
     listLoaded,
+		getCharacterByName
   };
 }

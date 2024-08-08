@@ -3,6 +3,7 @@ import RandomChar from "../randomChar/RandomChar";
 import CharList from "../charList/CharList";
 import CharInfo from "../charInfo/CharInfo";
 import ErrorBoundary from "../errorBoundary/ErrorBoundary";
+import CharSearchFrom from "../charSearchForm/CharSearchFrom";
 
 
 export default function MainPage() {
@@ -22,10 +23,15 @@ export default function MainPage() {
         <ErrorBoundary>
           <CharList onCharSelected={onCharSelected} />
         </ErrorBoundary>
-        <ErrorBoundary>
+        <div className="char__info-block">
+				<ErrorBoundary>
           <CharInfo charId={selectedChar} />
         </ErrorBoundary>
+				<ErrorBoundary>
+					<CharSearchFrom/>
+				</ErrorBoundary>
       </div>
+				</div>
     </>
   );
 }
