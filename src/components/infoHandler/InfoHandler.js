@@ -1,8 +1,10 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 import MarvelService from "../../services/MarvelService";
 import Loader from "../loader/Loader";
 import ErrorMessage from "../errorMessage/ErrorMessage";
+import AppBaner from "../appBanner/AppBanner";
 
 export default function InfoHandler(props) {
   const { itemId } = useParams();
@@ -37,6 +39,15 @@ export default function InfoHandler(props) {
 
 const View = ({ name, thumbnail, price, description, pageCount, language }) => {
   return (
+		<>
+		<Helmet>
+			<meta 
+			name="description"
+			content={`${name} page`}
+			/>
+			<title>{name}</title>
+		</Helmet>
+		<AppBaner />
     <div className="single-comic">
       <img src={thumbnail} alt={name} className="single-comic__img" />
       <div className="single-comic__info">
@@ -50,5 +61,6 @@ const View = ({ name, thumbnail, price, description, pageCount, language }) => {
         Back to all
       </Link>
     </div>
+		</>
   );
 };
