@@ -16,8 +16,8 @@ export default function CharSearchFrom() {
   } = useForm();
 
   const onSubmit = (name) => {
-    getCharacterByName(name).then(setChar);
-  };
+    getCharacterByName(name.name).then(setChar);
+	}
 
   const errorMessage = error ? <div className="char__search-critical-error"><ErrorMessage /></div> : null;
   const results = !char ? null : char.length > 0 ?

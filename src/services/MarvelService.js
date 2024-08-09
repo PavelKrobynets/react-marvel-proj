@@ -10,7 +10,7 @@ export default function useMarvelService() {
   const _key = "apikey=44c2cf8b8380798bbd06178bc0325db8";
   const _baseLimit = 9;
 
-	// Character block
+  // Character block
 
   const getAllCharacters = async (limit = _baseLimit, toggler) => {
     setLoadMore(toggler);
@@ -27,14 +27,10 @@ export default function useMarvelService() {
     return _transformCharacter(res.data.results[0]);
   };
 
-	const getCharacterByName = async (name) => {
-		const res = await request(
-			`${_apiBase}characters?${_key}`
-		)
-		return _transformCharacter(res.filter(char => {
-			return char.name.toLowerCase().includes(name.toLowerCase())
-		}))
-	}
+  const getCharacterByName = async (name) => {
+    const res = await request(`${_apiBase}characters?name=${name}&${_key}`);
+    return res.data.results.map(_transformCharacter)
+  };
 
   const _transformCharacter = (char) => {
     const description =
@@ -52,8 +48,7 @@ export default function useMarvelService() {
     };
   };
 
-
-	// Comics block
+  // Comics block
   const getAllComics = async (limit = _baseLimit, toggler) => {
     setLoadMore(toggler);
     const res = await request(
@@ -72,7 +67,7 @@ export default function useMarvelService() {
   const _transformComic = (comic) => {
     return {
       id: comic.id,
-      title: comic.title,
+      name: comic.title,
       thumbnail: comic.thumbnail.path + "." + comic.thumbnail.extension,
       price: comic.prices[0].price
         ? `${comic.prices[0].price}$`
@@ -80,7 +75,7 @@ export default function useMarvelService() {
       description: comic.description || "There is no description",
       pageCount: comic.pageCount
         ? `${comic.pageCount} p.`
-        : "No info abou pages",
+        : "No info about pages",
       language: comic.textObjects.language || "en-us",
     };
   };
@@ -92,9 +87,9 @@ export default function useMarvelService() {
     getCharacter,
     clearError,
     getAllComics,
-		getComic,
+    getComic,
     loadMore,
     listLoaded,
-		getCharacterByName
+    getCharacterByName,
   };
 }

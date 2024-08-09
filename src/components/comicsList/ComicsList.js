@@ -35,7 +35,7 @@ export default function ComicsList() {
             <div className="comics__item-img">
               <img
                 src={item.thumbnail}
-                alt={item.title}
+                alt={item.name}
                 style={
                   item.thumbnail ===
                   "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg"
@@ -44,7 +44,7 @@ export default function ComicsList() {
                 }
               />
             </div>
-            <div className="comics__item-name">{item.title}</div>
+            <div className="comics__item-name">{item.name}</div>
             <div className="comics__item-price">{item.price}</div>
           </Link>
         </li>
