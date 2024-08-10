@@ -3,14 +3,13 @@ import AppBanner from "../appBanner/AppBanner";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import useMarvelService from "../../services/MarvelService";
-import Loader from "../loader/Loader";
-import ErrorMessage from "../errorMessage/ErrorMessage";
+import setContent from "../../utils/setContent";
 
 export default function ComicsList() {
   const [comics, setComics] = useState([]);
   const [comicsLength, setComicsLength] = useState(8);
 
-  const { loading, error, getAllComics, loadMore, listLoaded } =
+  const { getAllComics, loadMore, listLoaded, process, setProcess } =
     useMarvelService();
 
   useEffect(() => {
@@ -18,7 +17,11 @@ export default function ComicsList() {
   }, []);
 
   const loadComicses = (comicsLength, toggler) => {
-    getAllComics(comicsLength, toggler).then(setComics);
+    getAllComics(comicsLength, toggler)
+      .then(setComics)
+      .then(() => {
+        setProcess("confirmed");
+      });
   };
 
   const addComicsLength = () => {
@@ -73,17 +76,11 @@ export default function ComicsList() {
     return null;
   }
 
-  const comicses = renderComicsLsit(comics),
-    loader = !loadMore && loading ? <Loader /> : null,
-    errorMessage = error ? <ErrorMessage /> : null;
-
   return (
     <div className="comics">
       <AppBanner />
       <div className="comics__list">
-        {comicses}
-        {errorMessage}
-        {loader}
+        {setContent(loadMore, process, () => renderComicsLsit(comics))}
       </div>
       {showBtn()}
     </div>

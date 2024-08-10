@@ -2,12 +2,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useMarvelService from "../../services/MarvelService";
 import { Link } from "react-router-dom";
-import ErrorMessage from '../errorMessage/ErrorMessage';
 import "./charSearchFrom.scss";
 
 export default function CharSearchFrom() {
   const [char, setChar] = useState(null);
-  const { getCharacterByName ,error } = useMarvelService();
+  const { getCharacterByName} = useMarvelService();
 
   const {
     register,
@@ -17,9 +16,9 @@ export default function CharSearchFrom() {
 
   const onSubmit = (name) => {
     getCharacterByName(name.name).then(setChar);
+		console.log(errors);
 	}
 
-  const errorMessage = error ? <div className="char__search-critical-error"><ErrorMessage /></div> : null;
   const results = !char ? null : char.length > 0 ?
                     <div className="char__search-wrapper">
                         <div className="char__search-success">There is! Visit {char[0].name} page?</div>
@@ -49,7 +48,6 @@ export default function CharSearchFrom() {
 			</div>
       {errors.name ? <div className="char__search-error">{errors.name.message}</div> : null}
     </form>
-		{errorMessage}
 		{results}
 		</div>
   );

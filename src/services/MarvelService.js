@@ -2,7 +2,7 @@ import { useState } from "react";
 import useHttp from "../hooks/http.hook";
 
 export default function useMarvelService() {
-  const { loading, error, request, clearError } = useHttp();
+  const {request, clearError, process, setProcess } = useHttp();
   const [loadMore, setLoadMore] = useState(false);
   const [listLoaded, setListLoaded] = useState(false);
 
@@ -29,7 +29,7 @@ export default function useMarvelService() {
 
   const getCharacterByName = async (name) => {
     const res = await request(`${_apiBase}characters?name=${name}&${_key}`);
-    return res.data.results.map(_transformCharacter)
+    return res.data.results.map(_transformCharacter);
   };
 
   const _transformCharacter = (char) => {
@@ -81,8 +81,6 @@ export default function useMarvelService() {
   };
 
   return {
-    loading,
-    error,
     getAllCharacters,
     getCharacter,
     clearError,
@@ -91,5 +89,7 @@ export default function useMarvelService() {
     loadMore,
     listLoaded,
     getCharacterByName,
+    process,
+		setProcess
   };
 }

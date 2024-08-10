@@ -1,32 +1,33 @@
 import "./charList.scss";
 import { useState, useEffect, useRef } from "react";
 import useMarvelService from "../../services/MarvelService";
-import Loader from "../loader/Loader";
-import ErrorMessage from "../errorMessage/ErrorMessage";
+import setContent from "../../utils/setContent";
 
 export default function CharList(props) {
   const [charList, setCharList] = useState([]),
     [charLength, setCharLength] = useState(9);
-		
 
-  const { loading, error, getAllCharacters, loadMore, listLoaded } = useMarvelService();
+  const {
+    getAllCharacters,
+    loadMore,
+    listLoaded,
+    process,
+    setProcess,
+  } = useMarvelService();
 
   useEffect(() => {
     loadCharacters(charLength, false);
-
   }, []);
 
-
   const loadCharacters = (charLength, toggler) => {
-    getAllCharacters(charLength, toggler).then(setCharList);
+    getAllCharacters(charLength, toggler).then(setCharList).then(() => setProcess("confirmed"))
   };
 
   const addCharLength = () => {
     const newCharLength = charLength + 9;
     setCharLength(newCharLength);
     loadCharacters(newCharLength, true);
-		console.log("loaded");
-
+    console.log("loaded");
   };
 
   const itemRefs = useRef([]);
@@ -79,36 +80,29 @@ export default function CharList(props) {
   }
 
   function showBtn() {
-    if(listLoaded){
-			return (
-				<button
-					className={`button button__main button__long button__load`}
-					onClick={() => addCharLength()}
-					style={
-						loadMore === true
-							? { animation: "glowing 1300ms infinite" }
-							: { animation: "glowing" }
-					}
-				>
-					<div className="inner">load more</div>
-				</button>
-			);
-		}
-		return null;
+    if (listLoaded) {
+      return (
+        <button
+          className={`button button__main button__long button__load`}
+          onClick={() => addCharLength()}
+          style={
+            loadMore === true
+              ? { animation: "glowing 1300ms infinite" }
+              : { animation: "glowing" }
+          }
+        >
+          <div className="inner">load more</div>
+        </button>
+      );
+    }
+    return null;
   }
 
-  const items = renderItems(charList),
-    loader = !loadMore && loading ? <Loader /> : null,
-    errorMessage = error ? <ErrorMessage /> : null;
-
-	
 
   return (
     <div className="char__list">
-      {loader}
-      {errorMessage}
-      {items}
-			{showBtn()}
+      {setContent(loadMore ,process, () => renderItems(charList))}
+      {showBtn()}
     </div>
   );
 }

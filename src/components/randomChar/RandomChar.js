@@ -2,13 +2,12 @@ import { useState, useEffect } from "react";
 import "./randomChar.scss";
 import mjolnir from "../../resources/img/mjolnir.png";
 import useMarvelService from "../../services/MarvelService";
-import Loader from "../loader/Loader";
-import ErrorMessage from "../errorMessage/ErrorMessage";
+import setContent from "../../utils/setContent";
 
 export default function RandomChar() {
   const [char, setCahr] = useState({});
 
-  const { loading, error, getCharacter, clearError} = useMarvelService();
+  const {getCharacter, clearError , process, setProcess} = useMarvelService();
 
   useEffect(() => {
     updateChar();
@@ -22,17 +21,12 @@ export default function RandomChar() {
   const updateChar = () => {
 		clearError();
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-    getCharacter(id).then(onCharLoaded);
+    getCharacter(id).then(onCharLoaded).then(() => {setProcess("confirmed")})
   };
 
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const loader = loading ? <Loader /> : null;
-  const content = !(loading || error) ? <View {...char} /> : null;
   return (
     <div className="randomchar">
-      {errorMessage}
-      {loader}
-      {content}
+      {setContent(false, process, View, char)}
       <div className="randomchar__static">
         <p className="randomchar__title">
           Random character for today!

@@ -2,17 +2,16 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import "./charInfo.scss";
 import useMarvelService from "../../services/MarvelService";
-import Loader from "../loader/Loader";
-import ErrorMessage from "../errorMessage/ErrorMessage";
-import Skeleton from "../skeleton/Skeleton";
+import setContent from "../../utils/setContent";
 
 function CharInfo(props) {
   const [char, setChar] = useState(null);
-  const {loading, error, getCharacter, clearError} =  useMarvelService();
+  const { getCharacter, clearError, process, setProcess } =
+    useMarvelService();
 
   useEffect(() => {
     updateChar();
-		console.log("change");
+    console.log("change");
   }, [props.charId]);
 
   const onCharLoaded = (char) => {
@@ -24,22 +23,19 @@ function CharInfo(props) {
     if (!charId) {
       return;
     }
-		clearError();
-      getCharacter(charId)
-      .then(onCharLoaded)
+    clearError();
+    getCharacter(charId).then(onCharLoaded).then(() => setProcess("confirmed"))
   };
 
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const loader = loading ? <Loader /> : null;
-  const skeleton = char || error || loading ? null : <Skeleton />;
-  const content = !(loading || error || !char) ? <View {...char} /> : null;
+
+  // const errorMessage = error ? <ErrorMessage /> : null;
+  // const loader = loading ? <Loader /> : null;
+  // const skeleton = char || error || loading ? null : <Skeleton />;
+  // const content = !(loading || error || !char) ? <View {...char} /> : null;
 
   return (
     <div className="char__info">
-      {skeleton}
-      {content}
-      {loader}
-      {errorMessage}
+      {setContent(false ,process, View, char)}
     </div>
   );
 }

@@ -2,15 +2,14 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import MarvelService from "../../services/MarvelService";
-import Loader from "../loader/Loader";
-import ErrorMessage from "../errorMessage/ErrorMessage";
 import AppBaner from "../appBanner/AppBanner";
+import setContent from "../../utils/setContent"
 
 export default function InfoHandler(props) {
   const { itemId } = useParams();
   const [item, setItem] = useState(null);
 
-  const { loading, error, getComic, getCharacter, clearError } =
+  const {getComic, getCharacter,process, setProcess } =
     MarvelService();
 
   useEffect(() => {
@@ -18,21 +17,15 @@ export default function InfoHandler(props) {
   }, [itemId]);
 
   const updateItem = () => {
-    clearError();
     props.char === "char"
-      ? getCharacter(itemId).then(setItem)
-      : getComic(itemId).then(setItem);
+      ? getCharacter(itemId).then(setItem).then(setProcess("confirmed"))
+      : getComic(itemId).then(setItem).then(setProcess("confirmed"))
   };
-
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const loader = loading ? <Loader /> : null;
-  const content = !(loading || error || !item) ? <View {...item} /> : null;
 
   return (
     <>
-      {errorMessage}
-      {loader}
-      {content}
+		<AppBaner/>
+      {setContent(false, process, View, item)}
     </>
   );
 }
