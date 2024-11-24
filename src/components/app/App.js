@@ -16,7 +16,7 @@ export default function App() {
         <main>
           <Suspense fallback={<span>Loading...</span>}>
             <Routes>
-              <Route path="/" element={<MainPage />} />
+              <Route path="/react-marvel-proj" element={<MainPage />} />
               <Route path="/comics" element={<ComicsPage />} />
               <Route path="/comics/:itemId" element={<SingleComicPage />} />
               <Route path="/characters/:itemId" element={<SingleCharPage />} />
