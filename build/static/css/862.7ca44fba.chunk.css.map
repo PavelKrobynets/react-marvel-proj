@@ -1,1 +1,0 @@
-{"version":3,"file":"static/css/862.7ca44fba.chunk.css","mappings":"AAAA,cACC,aACA","sources":["components/errorMessage/errorMessage.scss"],"sourcesContent":[".errorMessage{\n\tdisplay: flex;\n\tjustify-content: center;\n}"],"names":[],"sourceRoot":""}
